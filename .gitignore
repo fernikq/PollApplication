@@ -1,0 +1,16 @@
+target/
+.idea/
+.mvn/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/*git rm*/target/
+!**/src/test/**/target/
+.env
+
+### IntelliJ IDEA ###
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+*.iws
+*.iml
+*.ipr
