@@ -1,6 +1,5 @@
 package pl.fernikq.poll.data.mapper;
 
-import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 import pl.fernikq.poll.data.PollOption;
 import pl.fernikq.poll.data.dto.PollOptionDTO;

@@ -3,13 +3,11 @@ package pl.fernikq.poll.data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Setter
 @Getter
-@RequiredArgsConstructor
 public class PollVote {
 
     @Id
@@ -19,5 +17,5 @@ public class PollVote {
     @NotNull
     @JoinColumn(nullable = false)
     @ManyToOne
-    private PollOption optionId;
+    private PollOption option;
 }

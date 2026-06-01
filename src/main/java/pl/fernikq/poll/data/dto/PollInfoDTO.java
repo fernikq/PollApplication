@@ -7,13 +7,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
-public record CreatePollResponse(
+public record PollInfoDTO(
 
-        Long id,
         String name,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime createDate,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime closeDate,
         List<PollOptionDTO> options
+
 ) {}
