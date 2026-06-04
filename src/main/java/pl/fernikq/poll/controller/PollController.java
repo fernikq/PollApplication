@@ -17,7 +17,7 @@ public class PollController {
     private final PollService pollService;
 
     @PostMapping("/create")
-    public ResponseEntity<@NonNull CreatePollResponse> createPoll(CreatePollRequest request){
+    public ResponseEntity<@NonNull CreatePollResponse> createPoll(@RequestBody CreatePollRequest request){
         return pollService.createPoll(request);
     }
 
