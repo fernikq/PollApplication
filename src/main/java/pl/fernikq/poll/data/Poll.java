@@ -32,6 +32,6 @@ public class Poll {
     private LocalDateTime closeDate;
 
     @NotNull
-    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY)
     private List<PollOption> options;
 }

@@ -4,9 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.fernikq.poll.data.dto.CreatePollRequest;
-import pl.fernikq.poll.data.dto.CreatePollResponse;
-import pl.fernikq.poll.data.dto.PollInfoDTO;
+import pl.fernikq.poll.data.dto.*;
 import pl.fernikq.poll.service.PollService;
 
 @RestController
@@ -21,7 +19,7 @@ public class PollController {
         return pollService.createPoll(request);
     }
 
-    @PostMapping("/delete/{pollId}")
+    @DeleteMapping("/delete/{pollId}")
     public ResponseEntity<@NonNull Object> deletePoll(@PathVariable Long pollId){
         return pollService.deletePoll(pollId);
     }
@@ -29,5 +27,15 @@ public class PollController {
     @GetMapping("/info/{pollId}")
     public ResponseEntity<@NonNull PollInfoDTO> getInfoAboutPoll(@PathVariable Long pollId){
         return pollService.getInfoAboutPoll(pollId);
+    }
+
+    @PostMapping("/addOption")
+    public ResponseEntity<@NonNull PollOptionDTO> addPollOption(@RequestBody CreatePollOptionDTO createPollOptionDTO){
+        return pollService.addPollOption(createPollOptionDTO);
+    }
+
+    @DeleteMapping("/deleteOption/{pollOptionId}")
+    public ResponseEntity<@NonNull Object> removePollOption(@PathVariable Long pollOptionId){
+        return pollService.deletePollOption(pollOptionId);
     }
 }
