@@ -1,25 +1,20 @@
 package pl.fernikq.poll.service;
 
 import jakarta.transaction.Transactional;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.fernikq.poll.data.Poll;
 import pl.fernikq.poll.data.PollOption;
 import pl.fernikq.poll.data.dto.*;
+import pl.fernikq.poll.data.dto.request.CreatePollRequest;
+import pl.fernikq.poll.data.dto.response.CreatePollResponse;
 import pl.fernikq.poll.data.mapper.PollOptionMapper;
 import pl.fernikq.poll.data.repository.PollOptionRepository;
 import pl.fernikq.poll.data.repository.PollRepository;
 import pl.fernikq.poll.data.repository.PollVoteRepository;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +25,12 @@ public class PollService {
     private final PollOptionRepository pollOptionRepository;
     private final PollOptionMapper pollOptionMapper;
 
+    public Poll getPollById(Long pollId){
+        return this.repository.findById(pollId).orElseThrow(() -> new RuntimeException("Not found"));
+    }
+
     @Transactional
-    public ResponseEntity<@NonNull CreatePollResponse> createPoll(CreatePollRequest request){
+    public CreatePollResponse createPoll(CreatePollRequest request){
         Poll poll = Poll.builder().name(request.name()).createDate(LocalDateTime.now())
                 .closeDate(request.closeDate()).options(new ArrayList<>()).build();
         this.repository.save(poll);
@@ -41,65 +40,23 @@ public class PollService {
             poll.getOptions().add(pollOption);
             this.pollOptionRepository.save(pollOption);
         });
-        CreatePollResponse createPollResponse = CreatePollResponse
-                .builder().id(poll.getId()).name(poll.getName()).createDate(poll.getCreateDate())
+        return CreatePollResponse.builder()
+                .id(poll.getId()).name(poll.getName()).createDate(poll.getCreateDate())
                 .closeDate(poll.getCloseDate()).options(pollOptionMapper.toDTOList(poll.getOptions())).build();
-        return ResponseEntity.status(HttpStatus.CREATED).location(this.getURi(createPollResponse.id())).body(createPollResponse);
     }
 
     @Transactional
-    public ResponseEntity<@NonNull Object> deletePoll(Long pollId){
-        Optional<Poll> poll = this.repository.findById(pollId);
-        if(poll.isPresent()){
-            this.pollOptionRepository.deleteOptionsByPollId(pollId);
-            this.repository.delete(poll.get());
-            return ResponseEntity.status(HttpStatus.OK).body(pollId);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pollId);//TODO
+    public void deletePoll(Long pollId) {
+        Poll poll = this.repository.findById(pollId).orElseThrow(() -> new RuntimeException("TODO"));
+        this.pollOptionRepository.deleteOptionsByPollId(pollId);
+        this.repository.delete(poll);
     }
 
     @Transactional
-    public ResponseEntity<@NonNull PollInfoDTO> getInfoAboutPoll(Long pollId){
-        Optional<Poll> pollOptional = this.repository.findById(pollId);
-        if(pollOptional.isPresent()){
-            Poll poll = pollOptional.get();
-            PollInfoDTO pollInfoDTO = PollInfoDTO.builder().name(poll.getName())
-                    .createDate(poll.getCreateDate()).closeDate(poll.getCloseDate())
-                    .options(this.pollOptionMapper.toDTOList(poll.getOptions())).build();
-            return ResponseEntity.status(HttpStatus.OK).body(pollInfoDTO);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();//TODO
-    }
-
-    @Transactional
-    public ResponseEntity<@NonNull PollOptionDTO> addPollOption(CreatePollOptionDTO createPollOptionDTO){
-        Optional<Poll> pollOptional = this.repository.findById(createPollOptionDTO.pollId());
-        if(pollOptional.isPresent()){
-            Poll poll = pollOptional.get();
-            PollOption pollOption = PollOption.builder()
-                            .value(createPollOptionDTO.value()).poll(poll).build();
-            this.pollOptionRepository.save(pollOption);
-            poll.getOptions().add(pollOption);
-            return ResponseEntity.status(HttpStatus.CREATED).location(this.getURi(pollOption.getId())).build();
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
-
-    @Transactional
-    public ResponseEntity<@NonNull Object> deletePollOption(Long pollOptionId){
-        Optional<PollOption> pollOptionOptional = this.pollOptionRepository.findById(pollOptionId);
-        if(pollOptionOptional.isPresent()){
-            PollOption pollOption = pollOptionOptional.get();
-            Poll poll = pollOption.getPoll();
-            poll.getOptions().remove(pollOption);
-            this.pollOptionRepository.delete(pollOption);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    private URI getURi(Long id){
-        return ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(id).toUri();
+    public PollInfoDTO getInfoAboutPoll(Long pollId){
+        Poll poll = this.repository.findById(pollId).orElseThrow(() -> new RuntimeException("todo"));
+        return PollInfoDTO.builder().name(poll.getName())
+                .createDate(poll.getCreateDate()).closeDate(poll.getCloseDate())
+                .options(this.pollOptionMapper.toDTOList(poll.getOptions())).build();
     }
 }
