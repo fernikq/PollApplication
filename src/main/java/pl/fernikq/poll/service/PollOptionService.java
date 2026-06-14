@@ -8,6 +8,7 @@ import pl.fernikq.poll.data.PollOption;
 import pl.fernikq.poll.data.dto.PollOptionDTO;
 import pl.fernikq.poll.data.dto.request.CreatePollOptionRequest;
 import pl.fernikq.poll.data.repository.PollOptionRepository;
+import pl.fernikq.poll.exception.PollOptionNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class PollOptionService {
     @Transactional
     public void deletePollOption(Long pollOptionId){
         PollOption pollOption = this.repository.findById(pollOptionId)
-                .orElseThrow(() -> new RuntimeException("Not Found"));
+                .orElseThrow(() -> new PollOptionNotFoundException("Not found", pollOptionId));
         Poll poll = pollOption.getPoll();
         poll.getOptions().remove(pollOption);
         this.repository.delete(pollOption);

@@ -14,40 +14,40 @@ import pl.fernikq.poll.service.PollService;
 import pl.fernikq.poll.util.UriUtil;
 
 @RestController
-@RequestMapping("/poll")
+@RequestMapping("/polls")
 @RequiredArgsConstructor
 public class PollController {
 
     private final PollService pollService;
     private final PollOptionService pollOptionService;
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<@NonNull CreatePollResponse> createPoll(@RequestBody CreatePollRequest request){
         CreatePollResponse createPollResponse = pollService.createPoll(request);
         return ResponseEntity.created(UriUtil.getURI(createPollResponse.id())).body(createPollResponse);
     }
 
-    @DeleteMapping("/delete/{pollId}")
+    @DeleteMapping("/{pollId}")
     public ResponseEntity<@NonNull Object> deletePoll(@PathVariable Long pollId) {
         pollService.deletePoll(pollId);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pollId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(pollId);
     }
 
-    @GetMapping("/info/{pollId}")
+    @GetMapping("/{pollId}")
     public ResponseEntity<@NonNull PollInfoDTO> getInfoAboutPoll(@PathVariable Long pollId){
         PollInfoDTO pollInfoDTO = pollService.getInfoAboutPoll(pollId);
         return ResponseEntity.status(HttpStatus.OK).body(pollInfoDTO);
     }
 
-    @PostMapping("/addOption")
+    @PostMapping("/options")
     public ResponseEntity<@NonNull PollOptionDTO> addPollOption(@RequestBody CreatePollOptionRequest createPollOptionRequest){
         PollOptionDTO pollOptionDTO = pollOptionService.addPollOption(createPollOptionRequest);
         return ResponseEntity.status(HttpStatus.CREATED).location(UriUtil.getURI(pollOptionDTO.id())).body(pollOptionDTO);
     }
 
-    @DeleteMapping("/deleteOption/{pollOptionId}")
+    @DeleteMapping("/options/{pollOptionId}")
     public ResponseEntity<@NonNull Object> removePollOption(@PathVariable Long pollOptionId){
         pollOptionService.deletePollOption(pollOptionId);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pollOptionId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(pollOptionId);
     }
 }

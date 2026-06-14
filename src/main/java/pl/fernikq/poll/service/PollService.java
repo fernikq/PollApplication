@@ -12,6 +12,7 @@ import pl.fernikq.poll.data.mapper.PollOptionMapper;
 import pl.fernikq.poll.data.repository.PollOptionRepository;
 import pl.fernikq.poll.data.repository.PollRepository;
 import pl.fernikq.poll.data.repository.PollVoteRepository;
+import pl.fernikq.poll.exception.PollNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,14 +48,14 @@ public class PollService {
 
     @Transactional
     public void deletePoll(Long pollId) {
-        Poll poll = this.repository.findById(pollId).orElseThrow(() -> new RuntimeException("TODO"));
+        Poll poll = this.repository.findById(pollId).orElseThrow(() -> new PollNotFoundException("Poll not found", pollId));
         this.pollOptionRepository.deleteOptionsByPollId(pollId);
         this.repository.delete(poll);
     }
 
     @Transactional
     public PollInfoDTO getInfoAboutPoll(Long pollId){
-        Poll poll = this.repository.findById(pollId).orElseThrow(() -> new RuntimeException("todo"));
+        Poll poll = this.repository.findById(pollId).orElseThrow(() -> new PollNotFoundException("Poll not found", pollId));
         return PollInfoDTO.builder().name(poll.getName())
                 .createDate(poll.getCreateDate()).closeDate(poll.getCloseDate())
                 .options(this.pollOptionMapper.toDTOList(poll.getOptions())).build();
