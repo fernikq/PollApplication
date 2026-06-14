@@ -17,6 +17,10 @@ public class PollOptionService {
     private final PollOptionRepository repository;
     private final PollService pollService;
 
+    public PollOption getPollOptionById(Long pollOptionId){
+        return this.repository.findById(pollOptionId).orElseThrow(() -> new PollOptionNotFoundException("Not found", pollOptionId));
+    }
+
     @Transactional
     public PollOptionDTO addPollOption(CreatePollOptionRequest createPollOptionRequest){
         Poll poll = this.pollService.getPollById(createPollOptionRequest.pollId());

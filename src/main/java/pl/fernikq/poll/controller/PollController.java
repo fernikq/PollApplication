@@ -9,8 +9,10 @@ import pl.fernikq.poll.data.dto.*;
 import pl.fernikq.poll.data.dto.request.CreatePollOptionRequest;
 import pl.fernikq.poll.data.dto.request.CreatePollRequest;
 import pl.fernikq.poll.data.dto.response.CreatePollResponse;
+import pl.fernikq.poll.data.dto.response.PollVoteResponse;
 import pl.fernikq.poll.service.PollOptionService;
 import pl.fernikq.poll.service.PollService;
+import pl.fernikq.poll.service.PollVoteService;
 import pl.fernikq.poll.util.UriUtil;
 
 @RestController
@@ -20,6 +22,7 @@ public class PollController {
 
     private final PollService pollService;
     private final PollOptionService pollOptionService;
+    private final PollVoteService pollVoteService;
 
     @PostMapping("")
     public ResponseEntity<@NonNull CreatePollResponse> createPoll(@RequestBody CreatePollRequest request){
@@ -49,5 +52,18 @@ public class PollController {
     public ResponseEntity<@NonNull Object> removePollOption(@PathVariable Long pollOptionId){
         pollOptionService.deletePollOption(pollOptionId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(pollOptionId);
+    }
+
+    @PostMapping("/votes/{pollOptionId}")
+    public ResponseEntity<@NonNull PollVoteResponse> vote(@PathVariable Long pollOptionId){
+        PollVoteResponse pollVoteResponse = this.pollVoteService.vote(pollOptionId);
+        return ResponseEntity.status(HttpStatus.OK).body(pollVoteResponse);
+    }
+
+    //TODO, test
+    @GetMapping("/options/{pollOptionId}")
+    public ResponseEntity<@NonNull Long> test(@PathVariable Long pollOptionId) {
+        Long amount = this.pollVoteService.getAmountOfVotes(pollOptionId);
+        return ResponseEntity.status(HttpStatus.OK).body(amount);
     }
 }

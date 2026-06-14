@@ -7,4 +7,5 @@ import pl.fernikq.poll.data.PollVote;
 public interface PollVoteRepository extends JpaRepository<@NonNull PollVote, @NonNull Long> {
 
 
+    long countByOptionId(Long pollOptionId);
 }

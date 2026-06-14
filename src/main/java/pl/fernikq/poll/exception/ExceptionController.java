@@ -21,6 +21,14 @@ public class ExceptionController {
         return problemDetail;
     }
 
+    @ExceptionHandler(PollOptionNotFoundException.class)
+    public ProblemDetail handle(PollOptionNotFoundException exception){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+        problemDetail.setProperty("pollOptionId", exception.getPollOptionId());
+        problemDetail.setProperty("time", LocalDateTime.now().format(this.dateTimeFormatter));
+        return problemDetail;
+    }
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail handle(Exception exception){
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());

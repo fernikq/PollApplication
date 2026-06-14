@@ -8,6 +8,6 @@ import lombok.RequiredArgsConstructor;
 public class PollOptionNotFoundException extends RuntimeException {
 
     private final String message;
-    private final Long pollId;
+    private final Long pollOptionId;
 
 }
