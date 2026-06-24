@@ -37,7 +37,7 @@ public class PollService {
         this.repository.save(poll);
         request.options().forEach(string -> {
             PollOption pollOption = PollOption.builder()
-                    .value(string).poll(poll).build();
+                    .value(string).poll(poll).votesCount(0).build();
             poll.getOptions().add(pollOption);
             this.pollOptionRepository.save(pollOption);
         });

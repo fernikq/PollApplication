@@ -60,9 +60,8 @@ public class PollController {
         return ResponseEntity.status(HttpStatus.OK).body(pollVoteResponse);
     }
 
-    //TODO, test
     @GetMapping("/options/{pollOptionId}")
-    public ResponseEntity<@NonNull Long> test(@PathVariable Long pollOptionId) {
+    public ResponseEntity<@NonNull Long> getAmountOfVotes(@PathVariable Long pollOptionId) {
         Long amount = this.pollVoteService.getAmountOfVotes(pollOptionId);
         return ResponseEntity.status(HttpStatus.OK).body(amount);
     }

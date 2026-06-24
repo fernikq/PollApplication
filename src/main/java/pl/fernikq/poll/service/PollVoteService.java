@@ -21,12 +21,13 @@ public class PollVoteService {
         PollOption pollOption = pollOptionService.getPollOptionById(pollOptionId);
         PollVote pollVote = PollVote.builder()
                 .option(pollOption).build();
+        pollOption.addVote();
         Long pollId = pollOption.getPoll().getId();
         this.repository.save(pollVote);
-        return new PollVoteResponse(pollVote.getId() ,pollId, pollOptionId);
+        return new PollVoteResponse(pollVote.getId(), pollId, pollOptionId);
     }
 
     public Long getAmountOfVotes(Long pollOptionId){
-        return this.repository.countByOptionId(pollOptionId);
+        return this.pollOptionService.getPollOptionById(pollOptionId).getVotesCount().longValue();
     }
 }

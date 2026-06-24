@@ -25,4 +25,11 @@ public class PollOption {
     @ManyToOne(fetch = FetchType.LAZY)
     private Poll poll;
 
+    @NotNull
+    @Column(nullable = false)
+    private Integer votesCount;
+
+    public void addVote() {
+        this.votesCount++;
+    }
 }
